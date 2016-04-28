@@ -1,4 +1,4 @@
-package gov.sc.cluster;
+package gov.sc.filter;
 
 import gov.sc.model.TargetCell;
 
