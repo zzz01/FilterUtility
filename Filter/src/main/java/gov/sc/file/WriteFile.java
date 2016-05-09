@@ -1,6 +1,14 @@
 package gov.sc.file;
 
+import java.io.FileOutputStream;
 import java.util.List;
+
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 /**
  * 该类继承自File类
@@ -10,13 +18,13 @@ import java.util.List;
  */
 public class WriteFile extends File {
 
-	private String targetFile;
+	private String file;
 
 	/**
-	 * @param targetFile
+	 * @param file
 	 */
-	public WriteFile(String targetFile) {
-		this.targetFile = targetFile;
+	public WriteFile(String file) {
+		this.file = file;
 	}
 
 	/**
@@ -26,12 +34,12 @@ public class WriteFile extends File {
 		// TODO Auto-generated constructor stub
 	}
 
-	public String getTargetFile() {
-		return targetFile;
+	public String getFile() {
+		return file;
 	}
 
-	public void setTargetFile(String targetFile) {
-		this.targetFile = targetFile;
+	public void setFile(String file) {
+		this.file = file;
 	}
 
 	/**
@@ -41,7 +49,33 @@ public class WriteFile extends File {
 	 *            list中的每一个元素都是String数组，表示excel中的一行数据
 	 * @return 如果写入成功返回true，如果写入失败，返回false
 	 */
-	public boolean write(List<String[]> list) {
+	public boolean write(List<List<String>> list) {
+		Workbook workbook;
+		if (file.endsWith(".xls")) {
+			workbook = new HSSFWorkbook();
+		} else {
+			workbook = new XSSFWorkbook();
+		}
+		Sheet sheet = workbook.createSheet("sheet1");
+		for (int i = 0; i < list.size(); i++) {
+			List<String> rowList = list.get(i);
+			Row row = sheet.createRow(i);
+			for (int j = 0; j < rowList.size(); j++) {
+				// System.out.print(sheet.createRow(i).createCell(j));
+				Cell cell = row.createCell(j);
+				cell.setCellValue(rowList.get(j));
+				// sheet.createRow(i).createCell(j).setCellValue(rowList.get(j));
+			}
+		}
+		try {
+			FileOutputStream fout = new FileOutputStream(file);
+			workbook.write(fout);
+			fout.flush();
+			fout.close();
+			return true;
+		} catch (Exception e) {
+			// TODO: handle exception
+		}
 		return false;
 	}
 }
