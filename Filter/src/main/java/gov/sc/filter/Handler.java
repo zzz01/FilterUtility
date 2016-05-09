@@ -5,11 +5,10 @@ import gov.sc.file.WriteFile;
 
 import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.concurrent.Callable;
 
 import javax.swing.JProgressBar;
 
-public class Handler implements Callable<Boolean> {
+public class Handler{
 	private JProgressBar proBar;
 	private String file;
 	private String tarCol;
@@ -54,13 +53,10 @@ public class Handler implements Callable<Boolean> {
 
 	}
 
-	private boolean handle() throws Exception {
+	synchronized public boolean handle() throws Exception {
 		ReadFile read = new ReadFile(file);
 		LinkedHashMap<Integer, List<String>> map = read.getCells();
 		int value = map.size() + proBar.getMinimum();
-		// proBar.setMinimum(0);
-		// proBar.setString("读取文件成功");
-		// proBar.setValue(100);
 		int rowLength = proBar.getMaximum() / 4;
 		Cluster cluster = new Cluster();
 		List<List<String>> reList = cluster.getResultOfClusterAndSort(map,
@@ -85,18 +81,4 @@ public class Handler implements Callable<Boolean> {
 		proBar.setValue(0);
 		return false;
 	}
-
-	public Boolean call() {
-		try {
-
-			if (handle()) {
-				return true;
-			}
-		} catch (Exception e) {
-
-			e.printStackTrace();
-		}
-		return false;
-	}
-
 }

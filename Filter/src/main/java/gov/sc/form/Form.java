@@ -10,7 +10,6 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Rectangle;
-import java.io.IOException;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -22,8 +21,6 @@ import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.JProgressBar;
 import javax.swing.JTextField;
-
-import org.apache.xmlbeans.impl.xb.xsdschema.impl.OpenAttrsImpl;
 
 public class Form {
 	public final JFrame jFrame = new JFrame("解析Excel文件");
