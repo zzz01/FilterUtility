@@ -1,14 +1,14 @@
 package gov.sc.form.listener;
 
+import org.apache.log4j.Logger;
+
 import gov.sc.file.ReadFile;
 import gov.sc.file.WriteFile;
 import gov.sc.filter.Cluster;
 import gov.sc.form.Form;
 
-import java.awt.HeadlessException;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.IOException;
 import java.util.LinkedHashMap;
 import java.util.List;
 
@@ -17,7 +17,6 @@ import javax.swing.JOptionPane;
 import javax.swing.JProgressBar;
 
 public class BegButListener implements ActionListener {
-
 	private Form form;
 
 	/**
@@ -28,6 +27,11 @@ public class BegButListener implements ActionListener {
 	}
 
 	static class HandleThread extends Thread {
+		/**
+		 * Logger for this class
+		 */
+		private static final Logger logger = Logger
+				.getLogger(HandleThread.class);
 
 		private Form form;
 
@@ -41,6 +45,7 @@ public class BegButListener implements ActionListener {
 		@Override
 		public void run() {
 			JButton begBut = form.begBut;
+			JProgressBar proBar = form.progressbar;
 			String reFile = form.srcPthTxtFiled.getText().trim();
 			String tarCol = form.tarColTxtFiled.getText().trim();
 			String tarTim = form.tarTimTxtFiled.getText().trim();
@@ -54,44 +59,66 @@ public class BegButListener implements ActionListener {
 				return;
 			}
 
+			ReadFile read = new ReadFile(reFile);
+			LinkedHashMap<Integer, List<String>> map;
+			int proBarStep;
 			try {
-				ReadFile read = new ReadFile(reFile);
-				LinkedHashMap<Integer, List<String>> map = read.getCells();
-				int value = map.size();
-				form.progressbar.setMaximum(value * 4);
-				form.progressbar.setValue(value);
-				Cluster cluster = new Cluster();
-				List<List<String>> reList = cluster.getResultOfClusterAndSort(
-						map, tarCol.toUpperCase().charAt(0) - 64);
-				form.progressbar.setValue(value * 2);
-				WriteFile write = new WriteFile(reFile.replace(".xls", "(过滤后所有数据).xls"));
+				map = read.getCells();
+				proBarStep = map.size();
+				proBar.setMaximum(proBarStep * 4);
+				proBar.setValue(proBarStep);
+			} catch (Exception e) {
+				logger.info(e);
+				form.progressbar.setString("读取文件失败！！！");
+				JOptionPane.showMessageDialog(null, "读取文件失败");
+				return;
+			}
+			List<List<String>> reList;
+			Cluster cluster = new Cluster();
+			try {
+				reList = cluster.getResultOfClusterAndSort(map, tarCol
+						.toUpperCase().charAt(0) - 64);
+				proBar.setValue(proBarStep * 2);
+			} catch (Exception e) {
+				logger.info(e);
+				form.progressbar.setString("过滤数据失败！！！");
+				JOptionPane.showMessageDialog(null, "过滤数据失败");
+				return;
+			}
+			WriteFile write = new WriteFile();
+			boolean isSucceed = true;
+			try {
 				write.setFile(reFile.replace(".xls", "(过滤后所有数据).xls"));
-				boolean isALlSuc = write.write(reList);
-				form.progressbar.setValue(value * 3);
+				write.write(reList);
+				proBar.setValue(proBarStep * 3);
+			} catch (Exception e) {
+				logger.info(e);
+				form.progressbar.setString("过滤后所有数据写入失败！！！");
+				JOptionPane.showMessageDialog(null, "过滤后所有数据写入失败");
+				isSucceed = false;
+			}
+			try {
 				write.setFile(reFile.replace(".xls", "(过滤后统计数据).xls"));
 				reList = cluster.getResultOfCountAndTime(tarTim.toUpperCase()
 						.charAt(0) - 64);
-				boolean isStaSuc = write.write(reList);
-				form.progressbar.setValue(value * 4);
-				if (isALlSuc && isStaSuc) {
-					JOptionPane.showMessageDialog(null, "解析成功");
-					form.progressbar.setString("解析成功！！！");
-					return;
-				}
+				write.write(reList);
+				proBar.setValue(proBarStep * 4);
+			} catch (Exception e) {
+				logger.info(e);
+				form.progressbar.setString("过滤后统计数据写入失败！！！");
+				JOptionPane.showMessageDialog(null, "过滤后统计数据写入写入失败");
+				isSucceed = false;
+			}
+			if (isSucceed) {
+				JOptionPane.showMessageDialog(null, "解析成功");
+				form.progressbar.setString("解析成功！！！");
+				logger.info("succeed");
+			} else {
 				form.progressbar.setString("解析失败！！！");
 				JOptionPane.showMessageDialog(null, "解析失败");
-				begBut.setEnabled(true);
-				form.progressbar.setValue(0);
-			} catch (HeadlessException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} catch (Exception e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
 			}
+			begBut.setEnabled(true);
+			form.progressbar.setValue(0);
 		}
 
 	}

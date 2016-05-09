@@ -13,6 +13,7 @@ import java.util.Map;
 public class Cluster {
 	private List<List<String>> clusterList;// ���������Ľ��
 	private List<Integer> countList;// ʱ������ͳ����������Ľ��
+
 	public List<List<String>> getResultOfClusterAndSort(
 			LinkedHashMap<Integer, List<String>> map, int k) throws IOException {
 
@@ -23,7 +24,6 @@ public class Cluster {
 			System.in.read();
 			return null;
 		}
-		// 1����map��ȡ����������Ϊstring[]
 		String[] docs = new String[map.size()];
 		int m = 0;
 		Iterator it = map.entrySet().iterator();
@@ -34,25 +34,17 @@ public class Cluster {
 			docs[m++] = val.get(k - 1);
 		}
 
-		// 2����ʼ��TFIDF���������������ÿ���ĵ���TFIDFȨ��
 		TFIDFMeasure tf = new TFIDFMeasure(docs, new Tokeniser());
-		// 3�����k-means��������ݣ���һ���������飬��һά��ʾ�ĵ�����,�ڶ�ά��ʾ�����ĵ��ֳ��������д�
 		double[][] data = new double[docs.length][];
 		int docCount = docs.length; // �ĵ�����
 		for (int i = 0; i < docCount; i++) {
-			data[i] = tf.GetTermVector2(i); // ��ȡ��i���ĵ���TFIDFȨ������
+			data[i] = tf.GetTermVector2(i);
 		}
-		// 4����ʼ��k-means�㷨����һ�������ʾ������ݣ��ڶ��������ʾҪ�۳ɼ�����
-		// ��WawaKMeans��������Canopy�㷨�����Kֵ�Լ�����canopy������
 		WawaKMeans kmeans = new WawaKMeans(data);
-		// 5����ʼ���
 		kmeans.Start();
 
-		// 6����ȡ������浽ArrayList
 		WawaCluster[] clusters = kmeans.getClusters();
-		// 7�������������Ӵ�С����
 		sortNewsContent(clusters);
-		// 8����������浽List<List<String>>����
 		countList = new ArrayList<Integer>();
 		for (int i = 0; i < clusters.length; i++) {
 			int count = 0;
@@ -72,8 +64,8 @@ public class Cluster {
 	// / <param name="k">k��ʾʱ�����ڵ���ֵ</param>
 	// / <returns></returns>
 	public List<List<String>> getResultOfCountAndTime(int k) {
-		List<List<String>> resultList = new ArrayList<List<String>>(countList
-				.size());
+		List<List<String>> resultList = new ArrayList<List<String>>(
+				countList.size());
 		List<String> temp;
 		// ����������ݽṹclusterList�Լ�countList������緢�����Ų��Ҽ���������resultList
 		for (int i = 0; i < countList.size(); i++) {

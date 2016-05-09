@@ -31,15 +31,15 @@ public class Form {
 	public final JProgressBar progressbar = new JProgressBar(0, 1000);
 	public final JMenu fileMenu = new JMenu("文件");;
 	public final JMenu helpMenu = new JMenu("帮助");
-	public final JMenuItem openMI = new JMenuItem("  " + "打开");;
-	public final JMenuItem exitMI = new JMenuItem("  " + "退出");;
-	public final JMenuItem helpMI = new JMenuItem("  " + "使用说明");;
+	public final JMenuItem openMI = new JMenuItem("打开");;
+	public final JMenuItem exitMI = new JMenuItem("退出");;
+	public final JMenuItem helpMI = new JMenuItem("使用说明");;
 	public final JLabel selectFile = new JLabel("请选择文本:");
 	public final JLabel selectCol = new JLabel("请输入列标:");
 	public final JLabel selectTim = new JLabel("请输入时间列标:");
 	public final JTextField tarTimTxtFiled = new JTextField(8);
 
-	public void createForm(){
+	public void createForm() {
 
 		JPanel jpanelb = new JPanel();
 		JPanel jpanelc = new JPanel();
@@ -71,11 +71,14 @@ public class Form {
 		selectCol.setFont(new Font("宋体", Font.BOLD, 18));
 		selectTim.setFont(new Font("宋体", Font.BOLD, 18));
 		begBut.setFont(new Font("宋体", Font.BOLD, 15));
-		openMI.setIcon(new ImageIcon("./image/open.jpg"));
-		exitMI.setIcon(new ImageIcon("./image/exit.jpg"));
-		helpMI.setIcon(new ImageIcon("./image/help.jpg"));
-		ImageIcon icon = new ImageIcon("./image/filter.jpg");
-		jFrame.setIconImage(icon.getImage());
+		openMI.setIcon(new ImageIcon(this.getClass().getResource(
+				"/image/open.jpg")));
+		exitMI.setIcon(new ImageIcon(this.getClass().getResource(
+				"/image/exit.jpg")));
+		helpMI.setIcon(new ImageIcon(this.getClass().getResource(
+				"/image/help.jpg")));
+		jFrame.setIconImage(new ImageIcon(this.getClass().getResource(
+				"/image/filter.jpg")).getImage());
 		jFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);// 整个程序关闭
 		srcPthTxtFiled.setEditable(false);
 		jFrame.pack();

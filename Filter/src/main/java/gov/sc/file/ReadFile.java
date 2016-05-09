@@ -48,7 +48,6 @@ public class ReadFile {
 	 * @throws IOException
 	 * @throws FileNotFoundException
 	 */
-	@SuppressWarnings("resource")
 	public void readCells() throws FileNotFoundException, IOException {
 		cells = new LinkedHashMap<Integer, List<String>>();
 		Workbook workbook;
@@ -68,6 +67,7 @@ public class ReadFile {
 			}
 			cells.put(i, rowStr);
 		}
+		workbook.close();
 	}
 
 	public String getFile() {
