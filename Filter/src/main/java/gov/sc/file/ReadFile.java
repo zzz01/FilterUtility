@@ -3,7 +3,7 @@ package gov.sc.file;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.util.LinkedHashMap;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
@@ -20,7 +20,7 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 public class ReadFile {
 
 	private String file;
-	private LinkedHashMap<Integer, String[]> cells;
+	private List<String[]> cells;
 
 	/**
 	 * @param file
@@ -48,7 +48,7 @@ public class ReadFile {
 	 * @throws FileNotFoundException
 	 */
 	public void readCells() throws FileNotFoundException, IOException {
-		cells = new LinkedHashMap<Integer, String[]>();
+		cells = new ArrayList<String[]>();
 		Workbook workbook;
 		if (file.endsWith(".xls")) {
 			workbook = new HSSFWorkbook(new FileInputStream(file));
@@ -63,7 +63,7 @@ public class ReadFile {
 			for (int j = 0; j < colNum; j++) {
 				rowStr[j] = sheet.getRow(i).getCell(j).toString();
 			}
-			cells.put(i, rowStr);
+			cells.add(rowStr);
 		}
 		workbook.close();
 	}
@@ -76,7 +76,7 @@ public class ReadFile {
 		this.file = file;
 	}
 
-	public LinkedHashMap<Integer, String[]> getCells()
+	public List<String[]> getCells()
 			throws FileNotFoundException, IOException {
 		if (cells == null) {
 			readCells();
