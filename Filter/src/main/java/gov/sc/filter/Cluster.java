@@ -1,6 +1,7 @@
 package gov.sc.filter;
 
 import gov.sc.seg.Analysis;
+import gov.sc.utils.Time;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -166,7 +167,8 @@ public class Cluster {
 				break;
 			}
 			for (int i : set) {
-				if (cells.get(i)[timeLine].compareTo(originalTime) > 0) {
+				String time = Time.convert(cells.get(i)[timeLine]);
+				if (Time.compare(time, originalTime) > 0) {
 					originalIndex = i;
 					originalTime = cells.get(i)[timeLine];
 				}

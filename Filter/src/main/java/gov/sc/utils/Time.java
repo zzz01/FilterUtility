@@ -13,7 +13,7 @@ public class Time
 		return convertChnDate(date);
 	}
 	
-	public static int compareTo(String d1, String d2)
+	public static int compare(String d1, String d2)
 	{
 		return d1.compareTo(d2);
 	}
@@ -287,5 +287,9 @@ public class Time
 		}
 		
 		return setDate[0]+"/"+setDate[1]+"/"+setDate[2]+" "+setDate[3]+":"+setDate[4]+":"+setDate[5];
+	}
+	
+	public static void main(String[] args) {
+		System.out.println(Time.convert("Mar-01-2016"));
 	}
 }
